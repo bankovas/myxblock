@@ -82,11 +82,15 @@ class MyXBlock(XBlock):
     def check_answer(self, data, suffix=''):
         if data['userAnswer'] == self.answer:
             self.score += 1
-        n = random.randint(0, len(self.questions) - 1)
-        self.question = self.questions[n]["question"]
-        self.answer = self.questions[n]["answer"]
-        self.time = self.questions[n]["time"]
-        return {"score": self.score, "question": self.question}
+        if self.questions:
+            n = random.randint(0, len(self.questions) - 1)
+            self.question = self.questions[n]["question"]
+            self.answer = self.questions[n]["answer"]
+            self.time = self.questions[n]["time"]
+            self.questions.pop(n)
+            return {"score": self.score, "maxScore":self.maxScore, "question": self.question, "isDone" : False}
+        else:
+            return {"score": self.score, "maxScore":self.maxScore, "isDone" : True}
 
     # TO-DO: change this to create the scenarios you'd like to see in the
     # workbench while developing your XBlock.
