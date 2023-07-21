@@ -1,9 +1,11 @@
 """TO-DO: Write a description of what this XBlock is."""
 
 import pkg_resources
+import json
+import random
 from web_fragments.fragment import Fragment
 from xblock.core import XBlock
-from xblock.fields import Integer, Scope
+from xblock.fields import Integer, Scope, String, List
 
 
 class MyXBlock(XBlock):
@@ -14,11 +16,38 @@ class MyXBlock(XBlock):
     # Fields are defined on the class.  You can access them in your code as
     # self.<fieldname>.
 
-    # TO-DO: delete count, and define your own fields.
-    count = Integer(
-        default=0, scope=Scope.user_state,
-        help="A simple counter, to show something happening",
+   
+    score = Integer(
+        default = 0, cope=Scope.user_state,
+        help="Score",
     )
+
+    maxScore = Integer(
+        default = 0, cope=Scope.user_state,
+        help="Maximum Score",
+    )
+
+    question = String(
+        default="question", scope=Scope.user_state,
+        help="Question",
+    )
+
+    answer = String(
+        default="answer", scope=Scope.user_state,
+        help="Answer",
+    )
+
+    time = Integer(
+        default=9999, scope=Scope.user_state,
+        help="Question Time Limit",
+    )
+
+    questions = List(
+        default = [], scope=Scope.user_state,
+        help = "All questions"
+    )
+
+
 
     def resource_string(self, path):
         """Handy helper for getting resources from our kit."""
@@ -31,25 +60,37 @@ class MyXBlock(XBlock):
         The primary view of the MyXBlock, shown to students
         when viewing courses.
         """
+    
+        myJson = self.resource_string("public/data.json")
+        self.score = 0
+        self.questions = json.loads(myJson)["questions"]
+        self.maxScore = len(self.questions)
+        random.seed
+        n = random.randint(0, len(self.questions) - 1)
+        self.question = self.questions[n]["question"]
+        self.answer = self.questions[n]["answer"]
+        self.time = self.questions[n]["time"]
+        self.questions.pop(n)
         html = self.resource_string("static/html/myxblock.html")
         frag = Fragment(html.format(self=self))
         frag.add_css(self.resource_string("static/css/myxblock.css"))
         frag.add_javascript(self.resource_string("static/js/src/myxblock.js"))
-        frag.initialize_js('MyXBlock')
+        frag.initialize_js("MyXBlock")
         return frag
 
-    # TO-DO: change this handler to perform your own actions.  You may need more
-    # than one handler, or you may not need any handlers at all.
     @XBlock.json_handler
-    def increment_count(self, data, suffix=''):
-        """
-        An example handler, which increments the data.
-        """
-        # Just to show data coming in...
-        assert data['hello'] == 'world'
-
-        self.count += 1
-        return {"count": self.count}
+    def check_answer(self, data, suffix=''):
+        if data['userAnswer'] == self.answer:
+            self.score += 1
+        if self.questions:
+            n = random.randint(0, len(self.questions) - 1)
+            self.question = self.questions[n]["question"]
+            self.answer = self.questions[n]["answer"]
+            self.time = self.questions[n]["time"]
+            self.questions.pop(n)
+            return {"score": self.score, "maxScore":self.maxScore, "question": self.question, "isDone" : False}
+        else:
+            return {"score": self.score, "maxScore":self.maxScore, "isDone" : True}
 
     # TO-DO: change this to create the scenarios you'd like to see in the
     # workbench while developing your XBlock.

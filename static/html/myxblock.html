@@ -1,5 +1,8 @@
-<div class="myxblock_block">
-<p>MyXBlock: count is now
-    <span class='count'>{self.count}</span> (click me to increment).
-</p>
-</div>
+<body>
+    <div class="myxblock_block">
+       <p class="score">Баллы: {self.score}/{self.maxScore}</p>
+       <p><span class="question">{self.question}</span> <input type="text" class="answer"></p>
+       <button class="check">Проверить</button>
+       <p></p>
+    </div>
+</body>
