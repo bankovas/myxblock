@@ -1,6 +1,8 @@
 <body>
     <div class="myxblock_block">
-       <p><span id="question">{self.question}</span> <input type="text" id="answer"></p>
+       <p class="score">Баллы: {self.score}/{self.maxScore}</p>
+       <p><span class="question">{self.question}</span> <input type="text" class="answer"></p>
     </div>
-    <button id="check" onclick="check();">Проверить</button>
+    <button class="check">Проверить</button>
+    <p></p>
 </body>

@@ -2,18 +2,20 @@
 
 function MyXBlock(runtime, element) {
 
-    function updateCount(result) {
-        $('.count', element).text(result.count);
+    function checkAnswer(result) {
+        //Отобразить новый вопрос
+        //Отобразить новые баллы
+        $("p.score", element).text('hi');
     }
 
-    var handlerUrl = runtime.handlerUrl(element, 'increment_count');
+    var handlerUrl = runtime.handlerUrl(element, 'check_answer');
 
-    $('p', element).click(function(eventObject) {
+    $('button.check', element).click(function(eventObject) {
         $.ajax({
             type: "POST",
             url: handlerUrl,
-            data: JSON.stringify({"hello": "world"}),
-            success: updateCount
+            data: JSON.stringify({"userAnswer": $("input.answer", element).val()}),
+            success: checkAnswer
         });
     });
 
