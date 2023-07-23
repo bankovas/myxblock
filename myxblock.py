@@ -1,5 +1,4 @@
 """TO-DO: Write a description of what this XBlock is."""
-
 import pkg_resources
 import json
 import random
@@ -12,11 +11,6 @@ class MyXBlock(XBlock):
     """
     TO-DO: document what your XBlock does.
     """
-
-    # Fields are defined on the class.  You can access them in your code as
-    # self.<fieldname>.
-
-   
     score = Integer(
         default = 0, cope=Scope.user_state,
         help="Score",
@@ -50,15 +44,13 @@ class MyXBlock(XBlock):
 
 
     def resource_string(self, path):
-        """Handy helper for getting resources from our kit."""
         data = pkg_resources.resource_string(__name__, path)
         return data.decode("utf8")
 
-    # TO-DO: change this view to display your data your own way.
     def student_view(self, context=None):
         """
-        The primary view of the MyXBlock, shown to students
-        when viewing courses.
+        The primary view of the MyXBlock, shown to student
+        when taking a test.
         """
     
         myJson = self.resource_string("public/data.json")
@@ -91,12 +83,9 @@ class MyXBlock(XBlock):
             return {"score": self.score, "maxScore":self.maxScore, "question": self.question, "isDone" : False}
         else:
             return {"score": self.score, "maxScore":self.maxScore, "isDone" : True}
-
-    # TO-DO: change this to create the scenarios you'd like to see in the
-    # workbench while developing your XBlock.
+        
     @staticmethod
     def workbench_scenarios():
-        """A canned scenario for display in the workbench."""
         return [
             ("MyXBlock",
              """<myxblock/>
